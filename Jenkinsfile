@@ -1,27 +1,25 @@
 pipeline {
-    agent {
-        docker {
-            image 'mcr.microsoft.com/playwright/java:v1.49.0-noble'
-        }
-    }
+    agent any // Запускать на любом доступном агенте
 
     stages {
-        stage('Clean Workspace') {
-            steps {
-                // Очищаем папку перед началом, чтобы не было конфликтов Git
-                cleanWs()
-            }
-        }
         stage('Checkout') {
             steps {
-                // Скачиваем свежий код из Git
+                cleanWs()
                 checkout scm
             }
         }
-        stage('Run QA Tests') {
+        stage('Run Tests') {
             steps {
-                sh 'chmod +x ./gradlew'
-                sh './gradlew test'
+                // Если ты на Windows, используй bat, если на macOS/Linux — sh
+                // Jenkins сам поймет твою ОС
+                script {
+                    if (isUnix()) {
+                        sh 'chmod +x ./gradlew'
+                        sh './gradlew test'
+                    } else {
+                        bat 'gradlew.bat test'
+                    }
+                }
             }
         }
     }
