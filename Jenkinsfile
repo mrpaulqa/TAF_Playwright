@@ -1,18 +1,26 @@
 pipeline {
-    // Указываем Jenkins запустить всю сборку внутри контейнера Playwright
     agent {
         docker {
-            image 'mcr.microsoft.com/playwright/java:v1.60.0-noble'
+            image 'mcr.microsoft.com/playwright/java:v1.49.0-noble'
         }
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                // Очищаем папку перед началом, чтобы не было конфликтов Git
+                cleanWs()
+            }
+        }
+        stage('Checkout') {
+            steps {
+                // Скачиваем свежий код из Git
+                checkout scm
+            }
+        }
         stage('Run QA Tests') {
             steps {
-                // Делаем скрипт Gradle исполняемым внутри контейнера
                 sh 'chmod +x ./gradlew'
-
-                // Запускаем тесты через Gradle Wrapper
                 sh './gradlew test'
             }
         }
