@@ -1,0 +1,93 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.bit'
+version = '1.0-SNAPSHOT'
+
+java {
+    // Target Java 17 bytecode (the framework requirement) regardless of the JDK
+    // used to run Gradle. Using sourceCompatibility avoids forcing a toolchain
+    // download when only a newer JDK is installed locally.
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    cucumberVersion = '7.20.1'
+    allureVersion = '2.29.0'
+}
+
+dependencies {
+    // --- Test platform (JUnit 5 + Suite runner that drives Cucumber) ---
+    testImplementation platform("org.junit:junit-bom:5.11.4")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.platform:junit-platform-suite'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.38'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
+
+    // --- BDD: Cucumber + Gherkin, executed via the JUnit Platform engine ---
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-picocontainer:${cucumberVersion}"
+
+    // --- UI testing: Playwright (Chromium) ---
+    testImplementation 'com.microsoft.playwright:playwright:1.49.0'
+
+    // --- API testing: REST Assured ---
+    testImplementation 'io.rest-assured:rest-assured:5.5.0'
+
+    // --- DB testing: JDBC drivers (MySQL for Docker, H2 as embedded default) ---
+    testImplementation 'com.mysql:mysql-connector-j:9.1.0'
+    testImplementation 'com.h2database:h2:2.3.232'
+
+    // --- Reporting: Allure ---
+    testImplementation platform("io.qameta.allure:allure-bom:${allureVersion}")
+    testImplementation 'io.qameta.allure:allure-cucumber7-jvm'
+    testImplementation 'io.qameta.allure:allure-rest-assured'
+}
+
+// Standard `gradle test` runs the Cucumber suite through the JUnit Platform.
+tasks.named('test') {
+    useJUnitPlatform()
+    // Forward -D system properties (e.g. DB overrides) to the test JVM.
+    systemProperties System.properties.findAll { it.key.startsWith('db.') || it.key.startsWith('ui.') || it.key.startsWith('api.') }
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+}
+
+// Convenience task: run Cucumber directly via its CLI (same glue + Allure plugin).
+tasks.register('cucumber', JavaExec) {
+    group = 'verification'
+    description = 'Runs Cucumber feature files via the Cucumber CLI with the Allure plugin.'
+    dependsOn 'testClasses'
+    mainClass = 'io.cucumber.core.cli.Main'
+    classpath = sourceSets.test.runtimeClasspath
+    args = [
+            '--glue', 'com.bit.steps',
+            '--glue', 'com.bit.hooks',
+            '--plugin', 'pretty',
+            '--plugin', 'io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm',
+            'src/test/resources/features'
+    ]
+}
+
+// Installs Playwright browsers ahead of time (otherwise they auto-download on first UI run).
+tasks.register('installPlaywright', JavaExec) {
+    group = 'build setup'
+    description = 'Downloads the Playwright browser binaries (Chromium).'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.microsoft.playwright.CLI'
+    args = ['install', 'chromium']
+}
