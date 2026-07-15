@@ -2,7 +2,7 @@ pipeline {
     // Указываем Jenkins запустить всю сборку внутри контейнера Playwright
     agent {
         docker {
-            image 'mcr.microsoft.com/playwright/java:v1.49.0-noble'
+            image 'mcr.microsoft.com/playwright/java:v1.60.0-noble
         }
     }
 
