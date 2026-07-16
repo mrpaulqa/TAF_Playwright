@@ -1,5 +1,12 @@
 pipeline {
-    agent any // Запускать на любом доступном агенте
+    // Указываем Jenkins запустить тесты внутри официального контейнера Playwright
+    agent {
+        docker {
+            image 'mcr.microsoft.com/playwright/java:v1.49.0-noble'
+            // Ключевой флаг, который решает проблему с правами в Docker Desktop на Windows/Mac
+            args '-u root:docker'
+        }
+    }
 
     stages {
         stage('Checkout') {
@@ -8,18 +15,11 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Run Tests') {
+        stage('Run QA Tests') {
             steps {
-                // Если ты на Windows, используй bat, если на macOS/Linux — sh
-                // Jenkins сам поймет твою ОС
-                script {
-                    if (isUnix()) {
-                        sh 'chmod +x ./gradlew'
-                        sh './gradlew test'
-                    } else {
-                        bat 'gradlew.bat test'
-                    }
-                }
+                // Так как образ на Linux, запускаем через sh без лишних проверок ОС
+                sh 'chmod +x ./gradlew'
+                sh './gradlew test'
             }
         }
     }
