@@ -1,10 +1,9 @@
 pipeline {
-    // Указываем Jenkins запустить тесты внутри официального контейнера Playwright
     agent {
         docker {
             image 'mcr.microsoft.com/playwright/java:v1.49.0-noble'
-            // Ключевой флаг, который решает проблему с правами в Docker Desktop на Windows/Mac
-            args '-u root:docker'
+            // Мы убрали привязку к группе :docker, оставив только root
+            args '-u root'
         }
     }
 
@@ -17,7 +16,6 @@ pipeline {
         }
         stage('Run QA Tests') {
             steps {
-                // Так как образ на Linux, запускаем через sh без лишних проверок ОС
                 sh 'chmod +x ./gradlew'
                 sh './gradlew test'
             }
