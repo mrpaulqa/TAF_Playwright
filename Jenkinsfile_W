@@ -1,6 +1,11 @@
 pipeline {
-    // Никакого Docker! Используем ресурсы самого Windows-сервера
     agent any
+
+    tools {
+        // Jenkins сам поймет, какая ОС на агенте, скачает нужный дистрибутив,
+        // распакует в свою изолированную папку tools/ и сам выставит валидный JAVA_HOME.
+        jdk 'Adoptium_17'
+    }
 
     stages {
         stage('Checkout') {
@@ -11,7 +16,7 @@ pipeline {
         }
         stage('Run QA Tests on Windows') {
             steps {
-                // На Windows используем bat вместо sh
+                // Чистый запуск. Gradle подхватит JAVA_HOME, созданный Jenkins автоматически
                 bat 'gradlew.bat test'
             }
         }
