@@ -1,0 +1,19 @@
+pipeline {
+    // Никакого Docker! Используем ресурсы самого Windows-сервера
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                cleanWs()
+                checkout scm
+            }
+        }
+        stage('Run QA Tests on Windows') {
+            steps {
+                // На Windows используем bat вместо sh
+                bat 'gradlew.bat test'
+            }
+        }
+    }
+}
