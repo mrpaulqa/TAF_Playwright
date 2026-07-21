@@ -46,11 +46,10 @@ pipeline {
     // Секция post выполняется ВСЕГДА после прогона (даже если тесты упали)
     post {
         always {
-            // Генерируем Allure отчет из папки allure-results
-            allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
+            // Jenkins сам скачает Allure CLI (если его нет), сгенерирует отчет и прикрепит к сборке
+            allure commandline: 'allure_cli', includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
         }
         failure {
-            // Сохраняем скриншоты и логи только при падении
             archiveArtifacts artifacts: 'build/reports/tests/**/*', allowEmptyArchive: true
         }
     }
