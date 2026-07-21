@@ -11,7 +11,7 @@ public abstract class BasePage {
 
     protected final Page page;
 
-    protected BasePage() {
+    public BasePage() {
         this.page = PlaywrightFactory.getPage();
     }
 
@@ -20,6 +20,6 @@ public abstract class BasePage {
     }
 
     public String title() {
-        return page.title();
+        return this.page.title();
     }
 }
