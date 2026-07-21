@@ -2,9 +2,14 @@ pipeline {
     agent any
 
     tools {
-        // Jenkins сам поймет, какая ОС на агенте, скачает нужный дистрибутив,
-        // распакует в свою изолированную папку tools/ и сам выставит валидный JAVA_HOME.
         jdk 'JDK_17'
+    }
+
+    // Храним настройки времени и параметров в одном месте
+    options {
+        timeout(time: 1, unit: 'HOURS') // Защита от бесконечного висания тестов
+        timestamps()                     // Добавляет время к каждой строчке лога
+        buildDiscarder(logRotator(numToKeepStr: '10')) // Храним только последние 10 сборок (экономим диск)
     }
 
     stages {
@@ -14,11 +19,39 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Run QA Tests on Windows') {
-            steps {
-                // Чистый запуск. Gradle подхватит JAVA_HOME, созданный Jenkins автоматически
-                bat 'gradlew.bat test'
+
+        stage('Run Tests Parallel') {
+            // Параллельный запуск разных типов тестов
+            parallel {
+                stage('API Tests') {
+                    steps {
+                        bat 'gradlew.bat test --tests "*api*"'
+                    }
+                }
+                stage('UI Tests') {
+                    steps {
+                        // Например, прокидываем браузер через параметры
+                        bat 'gradlew.bat test --tests "*ui*"'
+                    }
+                }
+                stage('DataBase Tests') {
+                    steps {
+                        bat 'gradlew.bat test --tests "*db*"'
+                    }
+                }
             }
+        }
+    }
+
+    // Секция post выполняется ВСЕГДА после прогона (даже если тесты упали)
+    post {
+        always {
+            // Генерируем Allure отчет из папки allure-results
+            allure includeProperties: false, jdk: '', results: [[path: 'build/allure-results']]
+        }
+        failure {
+            // Сохраняем скриншоты и логи только при падении
+            archiveArtifacts artifacts: 'build/reports/tests/**/*', allowEmptyArchive: true
         }
     }
 }
