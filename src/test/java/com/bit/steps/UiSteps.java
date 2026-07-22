@@ -7,7 +7,7 @@ import com.bit.ui.MCPPage;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UiSteps {
     private final TestContext context;
@@ -26,7 +26,8 @@ public class UiSteps {
     @Then("the page title should contain {string}")
     public void thePageTitleShouldContain(String expected) {
         String title =context.getCurrentPage().title();
-        assertEquals(expected, title, "Expected title to contain '" + expected + "' but was '" + title + "'");
+        assertTrue(title.contains(expected),
+                "Expected title to contain '" + expected + "' but was '" + title + "'");
     }
 
     @Given("I open Docs page")
