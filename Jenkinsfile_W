@@ -4,6 +4,9 @@ pipeline {
     tools {
         jdk 'JDK_17'
     }
+    triggers {
+            cron('H 2 * * 1-5')
+        }
 
     // Храним настройки времени и параметров в одном месте
     options {
@@ -19,7 +22,12 @@ pipeline {
                 checkout scm
             }
         }
-
+        stage('Run PR Tests') {
+                        steps {
+                            // Если хотя бы 1 тест упадет, gradle завершится с ошибкой (exit code != 0)
+                            bat 'gradlew.bat clean test --tests "*api*"'
+                        }
+                    }
         stage('Run Tests Parallel') {
             // Параллельный запуск разных типов тестов
             parallel {
