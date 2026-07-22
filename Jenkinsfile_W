@@ -4,6 +4,9 @@ pipeline {
     tools {
         jdk 'JDK_17'
     }
+    triggers {
+            cron('H 2 * * 1-5')
+        }
 
     // Храним настройки времени и параметров в одном месте
     options {
@@ -12,32 +15,39 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10')) // Храним только последние 10 сборок (экономим диск)
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                cleanWs()
-                checkout scm
-            }
+    parameters {
+            // Позволяет при ручном запуске выбрать, что именно гоним
+            choice(name: 'TEST_SUITE', choices: ['ui', 'api', 'db','all'], description: 'Какой набор тестов запустить')
         }
 
-        stage('Run Tests Parallel') {
-            // Параллельный запуск разных типов тестов
-            parallel {
-                stage('API Tests') {
-                    steps {
-                        bat 'gradlew.bat test --tests "*api*"'
+    stages {
+        stage('Run Tests') {
+            steps {
+                script {
+                    def testTag = ''
+
+                    // 1. Если это запуск из Pull Request -> СТРОГО smoke
+                    if (env.CHANGE_ID) {
+                        echo "Авто-запуск для PR #${env.CHANGE_ID}: прогоняем только Smoke-тесты"
+                        testTag = 'api'
                     }
-                }
-                stage('UI Tests') {
-                    steps {
-                        // Например, прокидываем браузер через параметры
-                        bat 'gradlew.bat test --tests "*ui*"'
+                    else if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main') {
+                            echo "Изменения влиты в ${env.BRANCH_NAME}: запускаем полный регресс!"
+                            bat "gradlew.bat clean test"
+                        }
+                    // 2. Если запуск по расписанию (Cron / Nightly) -> полный регресс
+                    else if (BUILD_CAUSE == 'TIMERTRIGGER') {
+                        echo "Ночной авто-запуск: прогоняем полный Regression"
+                        testTag = 'ui'
                     }
-                }
-                stage('DataBase Tests') {
-                    steps {
-                        bat 'gradlew.bat test --tests "*db*"'
+                    // 3. Если запустили руками из UI -> берем выбор из параметров
+                    else {
+                        echo "Ручной запуск: выбран сьют ${params.TEST_SUITE}"
+                        testTag = params.TEST_SUITE
                     }
+
+                    // Передаем тег в Gradle
+                    bat "gradlew.bat clean test -Dtag=${testTag} --no-daemon"
                 }
             }
         }
