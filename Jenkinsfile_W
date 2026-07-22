@@ -15,10 +15,10 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10')) // Храним только последние 10 сборок (экономим диск)
     }
 
-parameters {
-        // Позволяет при ручном запуске выбрать, что именно гоним
-        choice(name: 'TEST_SUITE', choices: ['ui', 'api', 'db','all'], description: 'Какой набор тестов запустить')
-    }
+    parameters {
+            // Позволяет при ручном запуске выбрать, что именно гоним
+            choice(name: 'TEST_SUITE', choices: ['ui', 'api', 'db','all'], description: 'Какой набор тестов запустить')
+        }
 
     stages {
         stage('Run Tests') {
@@ -48,7 +48,6 @@ parameters {
             }
         }
     }
-}
 
     // Секция post выполняется ВСЕГДА после прогона (даже если тесты упали)
     post {
