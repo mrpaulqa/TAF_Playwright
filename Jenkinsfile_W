@@ -31,6 +31,10 @@ pipeline {
                         echo "Авто-запуск для PR #${env.CHANGE_ID}: прогоняем только Smoke-тесты"
                         testTag = 'api'
                     }
+                    else if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main') {
+                            echo "Изменения влиты в ${env.BRANCH_NAME}: запускаем полный регресс!"
+                            bat "gradlew.bat clean test"
+                        }
                     // 2. Если запуск по расписанию (Cron / Nightly) -> полный регресс
                     else if (BUILD_CAUSE == 'TIMERTRIGGER') {
                         echo "Ночной авто-запуск: прогоняем полный Regression"
