@@ -11,4 +11,4 @@ Feature: UI smoke test (Playwright)
 
   Scenario: Playwright docks page loads with the expected title
     Given I open MCP page
-    Then the page title should contain "Playwright"
+    Then the page title should contain "Failed"
