@@ -16,3 +16,9 @@ Feature: API smoke test (REST Assured)
     Then I send a POST request to "/posts" with title "Test 2", body "Some random body" and userId 90
     Then the response status code should be 201
     Then the response body should match the title "Test 2", body "Some random body" and userId 90
+
+ Scenario: Validate hardcoded value
+   Then I send a POST request to "/posts"
+   And the response field "title" should equal "Test"
+   And the response field "body" should equal "Some random body"
+   And the response field "userId" should equal "9"
