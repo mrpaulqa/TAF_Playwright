@@ -4,6 +4,9 @@ pipeline {
     tools {
         jdk 'JDK_17'
     }
+    environment {
+            REPORT_RECIPIENT = credentials('TEST_REPORT_EMAIL')
+        }
     triggers {
             cron('H 2 * * 1-5')
         }
@@ -60,6 +63,26 @@ pipeline {
                  includeProperties: false,
                  jdk: '',
                  results: [[path: '**/allure-results']]
+
+    emailext (
+                to: '${env.REPORT_RECIPIENT}',
+                subject: "Результаты тестов: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
+                body: """
+                      <html>
+                      <body>
+                          <h2>Статус сборки: ${currentBuild.currentResult}</h2>
+                          <p>Уважаемый коллега,</p>
+                          <p>Автотесты для проекта <b>${env.JOB_NAME}</b> (Сборка #${env.BUILD_NUMBER}) успешно завершены.</p>
+                          <br/>
+                          <p>📊 <b>Интерактивный Allure-отчет:</b> <a href="${env.BUILD_URL}allure/">Открыть Allure Report</a></p>
+                          <p>🔗 Ссылка на саму сборку в Jenkins: <a href="${env.BUILD_URL}">Jenkins Build</a></p>
+                          <br/>
+                          <p><i>Это автоматическое сообщение, отвечать на него не нужно.</i></p>
+                      </body>
+                      </html>
+                      """,
+                mimeType: 'text/html' // Обязательно указываем html, чтобы ссылки стали кликабельными
+            )
       }
   }
 }
