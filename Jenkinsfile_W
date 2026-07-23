@@ -5,7 +5,7 @@ pipeline {
         jdk 'JDK_17'
     }
     environment {
-            REPORT_RECIPIENT = credentials('TEST_REPORT_EMAIL')
+            TEST_REPORT_EMAIL = credentials('TEST_REPORT_EMAIL')
         }
     triggers {
             cron('H 2 * * 1-5')
@@ -64,11 +64,9 @@ pipeline {
                  jdk: '',
                  results: [[path: '**/allure-results']]
 
-          emailext (
-                    to: '${env.TEST_REPORT_EMAIL}',
-                    subject: "Результаты тестов",
-                    body: """results of tests"""
-            )
+          mail to: "${env.TEST_REPORT_EMAIL}",
+             subject: "Результаты тестов",
+             body: "Тесты успешно прогнаны!"
       }
   }
 }
