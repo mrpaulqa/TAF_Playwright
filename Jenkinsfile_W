@@ -59,13 +59,15 @@ pipeline {
     // Секция post выполняется ВСЕГДА после прогона (даже если тесты упали)
     post {
       always {
-          allure commandline: 'allure_cli',
+          allure (
+                 commandline: 'allure_cli',
                  includeProperties: false,
                  jdk: '',
                  results: [[path: '**/allure-results']]
+                 ),
 
-          emailext (
-              mail to: "${env.TEST_REPORT_EMAIL}",
+          mail (
+              to: "${env.TEST_REPORT_EMAIL}",
               subject: "Результаты тестов: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
               body: """
                      <html>
