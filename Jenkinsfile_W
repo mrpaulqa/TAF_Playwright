@@ -65,7 +65,7 @@ pipeline {
                  results: [[path: '**/allure-results']]
 
           emailext (
-              mail to: env.TEST_REPORT_EMAIL,
+              mail to: "${env.TEST_REPORT_EMAIL}",
               subject: "Результаты тестов: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
               body: """
                      <html>
