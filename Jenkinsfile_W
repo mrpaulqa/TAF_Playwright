@@ -62,7 +62,7 @@ pipeline {
           allure commandline: 'allure_cli',
                  includeProperties: false,
                  jdk: '',
-                 results: [[path: '**/allure-results']],
+                 results: [[path: '**/allure-results']]
 
           emailext (
               to: "${env.TEST_REPORT_EMAIL}",
