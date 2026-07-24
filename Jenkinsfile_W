@@ -5,23 +5,23 @@ pipeline {
         jdk 'JDK_17'
     }
     environment {
-            TEST_REPORT_EMAIL = credentials('TEST_REPORT_EMAIL')
-        }
+        TEST_REPORT_EMAIL = credentials('TEST_REPORT_EMAIL')
+    }
     triggers {
-            cron('H 2 * * 1-5')
-        }
+        cron('H 2 * * 1-5')
+    }
 
     // Храним настройки времени и параметров в одном месте
     options {
-        timeout(time: 1, unit: 'HOURS') // Защита от бесконечного висания тестов
+        timeout(time: 1, unit: 'HOURS') // Защита от бесконечного зависания тестов
         timestamps()                     // Добавляет время к каждой строчке лога
         buildDiscarder(logRotator(numToKeepStr: '10')) // Храним только последние 10 сборок (экономим диск)
     }
 
     parameters {
-            // Позволяет при ручном запуске выбрать, что именно гоним
-            choice(name: 'TEST_SUITE', choices: ['ui', 'api', 'db','all'], description: 'Какой набор тестов запустить')
-        }
+        // Позволяет при ручном запуске выбрать, что именно гоним
+        choice(name: 'TEST_SUITE', choices: ['ui', 'api', 'db', 'all'], description: 'Какой набор тестов запустить')
+    }
 
     stages {
         stage('Run Tests') {
@@ -29,16 +29,17 @@ pipeline {
                 script {
                     def testTag = ''
 
-                    // 1. Если это запуск из Pull Request -> СТРОГО smoke
+                    // 1. Если это запуск из Pull Request -> СТРОГО smoke (api)
                     if (env.CHANGE_ID) {
                         echo "Авто-запуск для PR #${env.CHANGE_ID}: прогоняем только Smoke-тесты"
                         testTag = 'api'
                     }
+                    // Исправлено: просто задаем тег 'all' для мастера/мейна, чтобы избежать двойного запуска
                     else if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main') {
-                            echo "Изменения влиты в ${env.BRANCH_NAME}: запускаем полный регресс!"
-                            bat "gradlew.bat clean test"
-                        }
-                    // 2. Если запуск по расписанию (Cron / Nightly) -> полный регресс
+                        echo "Изменения влиты в ${env.BRANCH_NAME}: готовим запуск полного регресса!"
+                        testTag = 'all'
+                    }
+                    // 2. Если запуск по расписанию (Cron / Nightly) -> полный регресс (ui)
                     else if (BUILD_CAUSE == 'TIMERTRIGGER') {
                         echo "Ночной авто-запуск: прогоняем полный Regression"
                         testTag = 'ui'
@@ -49,7 +50,7 @@ pipeline {
                         testTag = params.TEST_SUITE
                     }
 
-                    // Передаем тег в Gradle
+                    // Единая точка запуска тестов с правильным тегом
                     bat "gradlew.bat clean test -Dtag=${testTag} --no-daemon"
                 }
             }
@@ -58,24 +59,26 @@ pipeline {
 
     // Секция post выполняется ВСЕГДА после прогона (даже если тесты упали)
     post {
-      always {
-          allure commandline: 'allure_cli',
-                 includeProperties: false,
-                 jdk: '',
-                 results: [[path: '**/allure-results']]
+        always {
+            allure commandline: 'allure_cli',
+                   includeProperties: false,
+                   jdk: '',
+                   results: [[path: '**/allure-results']]
 
-          mail
-              to: env.TEST_REPORT_EMAIL,
-              subject: "Результаты тестов: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
-              body: """
+            // Исправлено: аргументы обернуты в скобки (), что решает проблему синтаксиса
+            mail(
+                to: env.TEST_REPORT_EMAIL,
+                subject: "Результаты тестов: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
+                body: """
                      <html>
                      <body>
                           <h2>Статус сборки: ${currentBuild.currentResult}</h2>
                           <p>Автотесты завершены. Посмотреть Allure: <a href="${env.BUILD_URL}allure/">Allure Report</a></p>
                      </body>
-                      </html>
+                     </html>
                     """,
-              mimeType: 'text/html'
-      }
-  }
+                mimeType: 'text/html'
+            )
+        }
+    }
 }
