@@ -65,7 +65,7 @@ pipeline {
                  results: [[path: '**/allure-results']]
           echo "DEBUG: ${env.TEST_REPORT_EMAIL}"
           echo "DEBUG: ..."
-          mail to: "${env.TEST_REPORT_EMAIL}",
+          mail to: env.TEST_REPORT_EMAIL,
              subject: "Результаты тестов",
              body: "Тесты успешно прогнаны!"
       }
