@@ -63,7 +63,7 @@ pipeline {
             allure commandline: 'allure_cli',
             includeProperties: false,
             jdk: '',
-            results: [[path: '**/allure-results']]
+            results: [[path: 'build/allure-results']]
 
             mail(
                 to: env.TEST_REPORT_EMAIL,
