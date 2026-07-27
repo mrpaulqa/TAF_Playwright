@@ -72,7 +72,7 @@ pipeline {
                      <html>
                      <body>
                           <h2>Статус сборки: ${currentBuild.currentResult}</h2>
-                          <p>Автотесты завершены. Посмотреть Allure: <a href="${env.BUILD_URL}allure/">Allure Report</a></p>
+                          <p>Автотесты завершены. Check Allure: <a href="${env.BUILD_URL}allure/">Allure Report</a></p>
                      </body>
                      </html>
                     """,
