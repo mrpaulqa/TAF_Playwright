@@ -23,40 +23,24 @@ pipeline {
         choice(name: 'TEST_SUITE', choices: ['ui', 'api', 'db','all'], description: 'Какой набор тестов запустить')
     }
     stages {
-        stage('Run Tests') {
+        // 1. Быстрый Smoke-прогон (работает ВСЕГДА и везде: в PR и в master)
+        stage('Smoke Tests') {
             steps {
-                cleanWs()
-                checkout scm
-                script {
-                    def testTag = ''
-                    sh 'chmod +x ./gradlew'
-                    // 1. Если это запуск из Pull Request -> СТРОГО smoke
-                    if (env.CHANGE_ID) {
-                        echo "Авто-запуск для PR #${env.CHANGE_ID}: прогоняем только Smoke-тесты"
-                        testTag = 'api'
-                    }
-                    else if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main') {
-                        echo "Изменения влиты в ${env.BRANCH_NAME}: запускаем полный регресс!"
-                        sh "./gradlew clean test"
-                    }
-                    // 2. Если запуск по расписанию (Cron / Nightly) -> полный регресс
-                    else if (BUILD_CAUSE == 'TIMERTRIGGER') {
-                        echo "Ночной авто-запуск: прогоняем полный Regression"
-                        testTag = 'ui'
-                    }
-                    // 3. Если запустили руками из UI -> берем выбор из параметров
-                    else {
-                        echo "Ручной запуск: выбран сьют ${params.TEST_SUITE}"
-                        testTag = params.TEST_SUITE
-                    }
+                sh 'chmod +x ./gradlew'
+                sh './gradlew test --tests "*SmokeTests*"'
+            }
+        }
 
-                    // Передаем тег в Gradle
-                    sh "./gradlew clean test"
-                }
+        // 2. Полный UI прогон (работает ТОЛЬКО в ветке master после мерджа)
+        stage('UI Tests') {
+            when {
+                branch 'master' // Запустится только когда код уже влит в master
+            }
+            steps {
+                sh './gradlew clean test'
             }
         }
     }
-
 
     post {
         always {
@@ -78,6 +62,7 @@ pipeline {
                     """,
                 mimeType: 'text/html'
             )
+            cleanWs()
         }
     }
 }

@@ -6,6 +6,7 @@ Feature: API smoke test (REST Assured)
     Then the response status code should be 200
     And the response field "id" should equal 1
 
+  @SmokeTests
   Scenario: Verify that post method working correctly
     Then I send a POST request to "/posts" with title "Test 2", body "Some random body" and userId 90
     Then the response status code should be 201
