@@ -81,6 +81,3 @@ pipeline {
         }
     }
 }
-
-http://localhost:8080/job/Pipeline%20Multi/job/PR-2/10/allure/#
-http://localhost:55000/job/Pipeline%20Multi/job/PR-2/10/allure/
