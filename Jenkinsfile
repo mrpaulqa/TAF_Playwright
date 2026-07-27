@@ -67,11 +67,11 @@ pipeline {
 
             mail(
                 to: env.TEST_REPORT_EMAIL,
-                subject: "Результаты тестов: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
+                subject: "[Docker] Результаты тестов: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
                 body: """
                      <html>
                      <body>
-                          <h2>Статус сборки: ${currentBuild.currentResult}</h2>
+                          <h2>[Docker]Статус сборки: ${currentBuild.currentResult}</h2>
                           <p>Автотесты завершены. Check Allure: <a href="${env.BUILD_URL}allure/">Allure Report</a></p>
                      </body>
                      </html>
