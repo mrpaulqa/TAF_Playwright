@@ -55,6 +55,7 @@ dependencies {
     testImplementation 'io.qameta.allure:allure-rest-assured'
 }
 
+
 // Standard `gradle test` runs the Cucumber suite through the JUnit Platform.
 tasks.named('test') {
     useJUnitPlatform()
@@ -68,7 +69,7 @@ tasks.named('test') {
 }
 
 // Convenience task: run Cucumber directly via its CLI (same glue + Allure plugin).
-tasks.register('cucumber', JavaExec) {
+tasks.register('cucumber', JavaExec.class) {
     group = 'verification'
     description = 'Runs Cucumber feature files via the Cucumber CLI with the Allure plugin.'
     dependsOn 'testClasses'
@@ -91,3 +92,13 @@ tasks.register('installPlaywright', JavaExec) {
     mainClass = 'com.microsoft.playwright.CLI'
     args = ['install', 'chromium']
 }
+tasks.register('smokeTest', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    useJUnitPlatform {
+        includeTags 'SmokeTests'
+    }
+}
+
+

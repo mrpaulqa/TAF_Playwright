@@ -27,7 +27,7 @@ pipeline {
         stage('Smoke Tests') {
             steps {
                 sh 'chmod +x ./gradlew'
-                sh './gradlew test --tests "*SmokeTests*"'
+                sh './gradlew clean smokeTest'
             }
         }
 
