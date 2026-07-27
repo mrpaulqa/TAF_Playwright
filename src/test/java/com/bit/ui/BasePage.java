@@ -22,4 +22,7 @@ public abstract class BasePage {
     public String title() {
         return this.page.title();
     }
+    public String pageHeader() {
+        return this.page.locator("h1").textContent();
+    }
 }

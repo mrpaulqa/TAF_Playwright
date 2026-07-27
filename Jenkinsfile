@@ -51,7 +51,7 @@ pipeline {
                     }
 
                     // Передаем тег в Gradle
-                    sh "./gradlew clean test -Dtag=${testTag}"
+                    sh "./gradlew clean test"
                 }
             }
         }
@@ -65,9 +65,19 @@ pipeline {
             jdk: '',
             results: [[path: '**/allure-results']]
 
-            mail to: "${env.TEST_REPORT_EMAIL}",
-            subject: "Результаты тестов",
-            body: "Тесты успешно прогнаны!"
+            mail(
+                to: env.TEST_REPORT_EMAIL,
+                subject: "Результаты тестов: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
+                body: """
+                     <html>
+                     <body>
+                          <h2>Статус сборки: ${currentBuild.currentResult}</h2>
+                          <p>Автотесты завершены. Посмотреть Allure: <a href="${env.BUILD_URL}allure/">Allure Report</a></p>
+                     </body>
+                     </html>
+                    """,
+                mimeType: 'text/html'
+            )
         }
     }
 }
