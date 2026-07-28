@@ -1,27 +1,21 @@
 package com.bit.steps.SaucedemoSteps;
 
 import com.bit.context.TestContext;
-import com.bit.ui.HomePage;
 import com.bit.ui.Saucedemo.LoginPage;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoginPageStepsDefinition {
+    private final TestContext context;
+    LoginPage loginPage = new LoginPage();
+
     public LoginPageStepsDefinition(TestContext context) {
         this.context = context;
     }
 
-    private final TestContext context;
-    LoginPage loginPage = new LoginPage();
-
-
-
     @Given("I open SauceDemo login page")
     public void iOpenLoginPage() {
-      loginPage.open();
-      context.setCurrentPage(loginPage);
+        loginPage.open();
+        context.setCurrentPage(loginPage);
     }
 
 
