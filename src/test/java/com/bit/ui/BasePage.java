@@ -1,6 +1,7 @@
 package com.bit.ui;
 
 import com.bit.utils.PlaywrightFactory;
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 /**
@@ -24,5 +25,9 @@ public abstract class BasePage {
     }
     public String pageHeader() {
         return this.page.locator("h1").textContent();
+    }
+
+    public void typeText(Locator inputLocator, String text){
+        inputLocator.fill(text);
     }
 }

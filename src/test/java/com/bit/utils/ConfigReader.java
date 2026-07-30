@@ -11,35 +11,57 @@ import java.util.Properties;
  */
 public final class ConfigReader {
 
-    private static final Properties PROPERTIES = new Properties();
+        private static final Properties PROPERTIES = new Properties();
 
-    static {
-        try (InputStream in = ConfigReader.class.getClassLoader().getResourceAsStream("config.properties")) {
-            if (in == null) {
-                throw new IllegalStateException("config.properties not found on the classpath");
+        // Список всех файлов конфигурации
+        private static final String[] CONFIG_FILES = {
+                "config.properties",
+                "users.properties",
+                "env.properties"
+        };
+
+        static {
+            for (String fileName : CONFIG_FILES) {
+                loadPropertiesFile(fileName);
             }
-            PROPERTIES.load(in);
-        } catch (IOException e) {
-            throw new ExceptionInInitializerError(e);
         }
-    }
 
-    private ConfigReader() {
-    }
-
-    public static String get(String key) {
-        String sysProp = System.getProperty(key);
-        if (sysProp != null && !sysProp.isBlank()) {
-            return sysProp;
+        private ConfigReader() {
         }
-        String envValue = System.getenv(key.replace('.', '_').toUpperCase());
-        if (envValue != null && !envValue.isBlank()) {
-            return envValue;
-        }
-        return PROPERTIES.getProperty(key);
-    }
 
+        private static void loadPropertiesFile(String fileName) {
+            try (InputStream in = ConfigReader.class.getClassLoader().getResourceAsStream(fileName)) {
+                if (in != null) {
+                    PROPERTIES.load(in);
+                } else {
+                    // Можно сделать warning или выбросить исключение, если файл обязателен
+                    System.out.println("WARN: Property file not found: " + fileName);
+                }
+            } catch (IOException e) {
+                throw new ExceptionInInitializerError("Failed to load properties file: " + fileName + " - " + e.getMessage());
+            }
+        }
+
+        public static String get(String key) {
+            // 1. Приоритет: System Property (-Dkey=value)
+            String sysProp = System.getProperty(key);
+            if (sysProp != null && !sysProp.isBlank()) {
+                return sysProp;
+            }
+
+            // 2. Приоритет: Переменные окружения (ENV)
+            String envValue = System.getenv(key.replace('.', '_').toUpperCase());
+            if (envValue != null && !envValue.isBlank()) {
+                return envValue;
+            }
+
+            // 3. Приоритет: Из сmerged PROPERTIES (ищет по всем загруженным файлам)
+            return PROPERTIES.getProperty(key);
+        }
     public static boolean getBoolean(String key) {
         return Boolean.parseBoolean(get(key));
     }
-}
+
+    }
+
+
