@@ -6,7 +6,8 @@ pipeline {
     }
     environment {
         TEST_REPORT_EMAIL = credentials('TEST_REPORT_EMAIL')
-        THINKING_TOKEN = credentials('THINKING_TOKEN')
+        THINKING_EMAIL = credentials('THINKING_EMAIL')
+        THINKING_PASSWORD = credentials('THINKING_PASSWORD')
     }
     triggers {
         cron('H 2 * * 1-5')
@@ -52,7 +53,7 @@ pipeline {
                     }
 
                     // Единая точка запуска тестов с правильным тегом
-                  bat 'gradlew.bat clean test -Dtag=%testTag% --no-daemon -Dapi.thinkingToken="%THINKING_TOKEN%"'
+                  bat 'gradlew.bat clean test -Dtag=%testTag% --no-daemon -Dapi.thinkingEmail="%THINKING_EMAIL%" -Dapi.thinkingPassword="%THINKING_PASSWORD%"'
                 }
             }
         }
