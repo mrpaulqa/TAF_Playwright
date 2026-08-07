@@ -9,7 +9,7 @@ variables:
 test_job:
   stage: test
   script:
-    # Делаем gradlew исполняемым и запускаем тесты
+    # Делаем gradlew исполняемым и запускаем тесты с параметрами
     - chmod +x ./gradlew
     - ./gradlew clean test -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
 
