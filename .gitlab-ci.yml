@@ -32,5 +32,3 @@ pages:
   artifacts:
     paths:
       - public # Папка public обязательна для GitLab Pages
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Публиковать при пуше в main/master
