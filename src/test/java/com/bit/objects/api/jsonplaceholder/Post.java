@@ -1,4 +1,4 @@
-package com.bit.objects.api;
+package com.bit.objects.api.jsonplaceholder;
 
 import lombok.*;
 

@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Contacts {
+public class Contact {
         private String firstName;
         private String lastName;
         private String birthdate;

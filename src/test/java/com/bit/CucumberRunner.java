@@ -13,7 +13,6 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
-@IncludeTags("sauceLogin")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.bit.steps,com.bit.hooks")
 @ConfigurationParameter(
         key = PLUGIN_PROPERTY_NAME,

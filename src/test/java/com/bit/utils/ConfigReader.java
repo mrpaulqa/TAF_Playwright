@@ -17,7 +17,7 @@ public final class ConfigReader {
         private static final String[] CONFIG_FILES = {
                 "config.properties",
                 "users.properties",
-                "env.properties"
+                ".env.properties",
         };
 
         static {

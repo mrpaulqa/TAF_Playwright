@@ -52,7 +52,7 @@ public final class PlaywrightFactory {
         }
         if (PLAYWRIGHT.get() != null) {
             PLAYWRIGHT.get().close();
-        }
+                }
         PAGE.remove();
         CONTEXT.remove();
         BROWSER.remove();
