@@ -5,7 +5,8 @@ build/
 !**/src/test/**/build/
 .kotlin
 .env
-
+git remote set-url --add --push origin https://git.epam.com/pavlo_hurskyi/TAF_Playwright.git
+git remote set-url --add --push origin https://git.epam.com//pavlo_hurskyi/TAF_Playwright.git
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

@@ -13,7 +13,7 @@ test_job:
     - chmod +x ./gradlew
     - ./gradlew clean test -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
 
-  # Сохраняем отчеты о тестах (HTML и JUnit XML)
+  # Сохраняем отчеты о тестах (HTML и JUnit XML or other)
   artifacts:
     when: always
     paths:
