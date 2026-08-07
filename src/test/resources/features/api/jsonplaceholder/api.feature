@@ -1,4 +1,4 @@
-@api
+@apijsonplaceholder
 Feature: API smoke test (REST Assured)
 
   Scenario: Fetch a single post by id

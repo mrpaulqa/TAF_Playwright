@@ -1,20 +1,21 @@
 package com.bit.api.jsonplaceholder;
 
 import com.bit.api.BaseApi;
+import com.bit.api.ThinkingTester.SpectType;
 import com.bit.objects.api.jsonplaceholder.Post;
-import com.bit.utils.ConfigReader;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
+import static com.bit.api.specs.RequestSpecFactory.getRequestSpecification;
 import static io.restassured.RestAssured.given;
 
 public class PostsApiClient extends BaseApi {
     private static final String POSTS_ENDPOINT = "/posts";
-    private static final String BASE_URL = ConfigReader.get("api.jsonplaceholderBaseUrl");
-
+    private final RequestSpecification requestSpecification =getRequestSpecification(SpectType.UNAUTH);
     // 1. Метод, возвращающий сырой Response (для проверок статус-кодов, заголовков)
     public Response createPost(Post postBody) {
         return given()
-                .spec(request(BASE_URL))
+                .spec(requestSpecification)
                 .body(postBody)
                 .post(POSTS_ENDPOINT);
     }
@@ -29,33 +30,33 @@ public class PostsApiClient extends BaseApi {
 
     public Response getPostById(int userId) {
         return given()
-                .spec(request(BASE_URL))
+                .spec(requestSpecification)
                 .get(POSTS_ENDPOINT + "/" + userId);
     }
 
     public Response getAllPosts(int userId) {
         return given()
-                .spec(request(BASE_URL))
+                .spec(requestSpecification)
                 .get(POSTS_ENDPOINT);
     }
 
     public Response updatePostById(int postId,Post postBody) {
         return given()
-                .spec(request(BASE_URL))
+                .spec(requestSpecification)
                 .body(postBody)
                 .put(POSTS_ENDPOINT);
     }
 
     public Response patchPost(int postId,Post postBody) {
         return given()
-                .spec(request(BASE_URL))
+                .spec(requestSpecification)
                 .body(postBody)
                 .put(POSTS_ENDPOINT);
     }
 
     public Response deletePost(int postId) {
         return given()
-                .spec(request(BASE_URL))
+                .spec(requestSpecification)
                 .delete(POSTS_ENDPOINT + "/"+postId);
     }
 

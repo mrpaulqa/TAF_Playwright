@@ -2,20 +2,19 @@ package com.bit.api.ThinkingTester;
 
 import com.bit.api.BaseApi;
 import com.bit.objects.api.ThinkingTesterApp.Contact;
-import com.bit.utils.ConfigReader;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
+import static com.bit.api.specs.RequestSpecFactory.getRequestSpecification;
 import static io.restassured.RestAssured.given;
 
 public class ContactApiClient extends BaseApi {
     private static final String CONTACTS_ENDPOINT = "/contacts";
-    private final String  token = ConfigReader.get("api.thinkingToken");
-    private static final String BASE_URL = ConfigReader.get("api.thinkingTester");
-
+    private final RequestSpecification  requestSpecification =getRequestSpecification(SpectType.AUTH);
 
     public Response createContact(Contact contact) {
         return given()
-                .spec(getAuthRequestSpec(BASE_URL,token))
+                .spec(requestSpecification)
                 .body(contact)
                 .post(CONTACTS_ENDPOINT);
     }
@@ -29,13 +28,13 @@ public class ContactApiClient extends BaseApi {
 
     public Response getContactsById(String userId) {
         return given()
-                .spec(getAuthRequestSpec(BASE_URL,token))
+                .spec(requestSpecification)
                 .get(CONTACTS_ENDPOINT + "/" + userId);
     }
 
     public Response getAllContacts() {
         return given()
-                .spec(getAuthRequestSpec(BASE_URL,token))
+                .spec(requestSpecification)
                 .get(CONTACTS_ENDPOINT);
     }
 
