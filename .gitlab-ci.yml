@@ -12,7 +12,8 @@ test_job:
     # Делаем gradlew исполняемым и запускаем тесты
     - chmod +x ./gradlew
     - ./gradlew clean test -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
-
+  git remote set-url --delete --push origin https://gitlab.com/pavlo_hurskyi/TAF_Playwright.git
+  git remote set-url --add --push origin https://github.com/mrpaulqa/TAF_Playwright.git
   # Сохраняем отчеты о тестах (HTML и JUnit XML or other)
   artifacts:
     when: always
