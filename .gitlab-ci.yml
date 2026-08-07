@@ -1,0 +1,23 @@
+image: eclipse-temurin:17-jdk-alpine  # Используем контейнер с Java 17
+
+stages:
+  - test
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false" # Отключаем Gradle Daemon
+
+test_job:
+  stage: test
+  script:
+    # Делаем gradlew исполняемым и запускаем тесты
+    - chmod +x ./gradlew
+    - ./gradlew clean test -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
+
+  # Сохраняем отчеты о тестах (HTML и JUnit XML)
+  artifacts:
+    when: always
+    paths:
+      - build/reports/tests/test/
+    reports:
+      junit: build/test-results/test/TEST-*.xml
+    expire_in: 1 week
