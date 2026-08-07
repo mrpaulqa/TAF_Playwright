@@ -1,26 +1,36 @@
 image: mcr.microsoft.com/playwright/java:v1.40.0-jammy
-workflow:
-  name: "Regression Test Suite Run - $CI_COMMIT_REF_NAME"
 
 stages:
   - test
+  - deploy
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-  PLAYWRIGHT_HEADLESS: "true" # Гарантируем headless-режим
 
-API & UI Automated Tests:
+# 1. Запуск тестов и сбор allure-results
+run_tests:
   stage: test
   script:
     - chmod +x ./gradlew
-    # Включаем headless через системные параметры Java (если передаешь через System.getProperty)
-    - ./gradlew clean test -Dheadless=true -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
-
+    - ./gradlew clean test -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
   artifacts:
     when: always
     paths:
-      - build/reports/tests/test/
-      - target/playwright/ # Если сохраняешь скриншоты/трассировки
-    reports:
-      junit: build/test-results/test/TEST-*.xml
-    expire_in: 1 week
+      - build/allure-results/
+    expire_in: 1 day
+
+# 2. Генерация и публикация отчета Allure
+pages:
+  stage: deploy
+  dependencies:
+    - run_tests
+  script:
+    # Скачиваем CLI Allure и генерируем отчет в папку public
+    - wget https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.tgz
+    - tar -zxvf allure-2.25.0.tgz
+    - ./allure-2.25.0/bin/allure generate build/allure-results -o public --clean
+  artifacts:
+    paths:
+      - public # Папка public обязательна для GitLab Pages
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Публиковать при пуше в main/master
