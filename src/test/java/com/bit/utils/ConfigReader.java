@@ -1,5 +1,7 @@
 package com.bit.utils;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -42,22 +44,37 @@ public final class ConfigReader {
             }
         }
 
-        public static String get(String key) {
-            // 1. Приоритет: System Property (-Dkey=value)
-            String sysProp = System.getProperty(key);
-            if (sysProp != null && !sysProp.isBlank()) {
-                return sysProp;
-            }
-
-            // 2. Приоритет: Переменные окружения (ENV)
-            String envValue = System.getenv(key.replace('.', '_').toUpperCase());
-            if (envValue != null && !envValue.isBlank()) {
-                return envValue;
-            }
-
-            // 3. Приоритет: Из сmerged PROPERTIES (ищет по всем загруженным файлам)
-            return PROPERTIES.getProperty(key);
+    public static String get(String key) {
+        if (key == null || key.isBlank()) {
+            return null;
         }
+
+        // 1. Приоритет №1: System Property (-Dkey=value из CLI)
+        String sysProp = System.getProperty(key);
+        if (sysProp != null && !sysProp.isBlank()) {
+            return sysProp;
+        }
+
+        // 2. Приоритет №2: Переменные окружения из Jenkins/ОС (например, api.thinkingTester -> API_THINKINGTESTER или API_THINKING_TESTER)
+        String envKey = key.replace('.', '_').toUpperCase();
+        String envValue = System.getenv(envKey);
+        if (envValue != null && !envValue.isBlank()) {
+            return envValue;
+        }
+
+        // 3. Приоритет №3: Поиск в загруженных .properties файлах (локальный запуск)
+        String propValue = PROPERTIES.getProperty(key);
+        if (propValue != null && !propValue.isBlank()) {
+            return propValue;
+        }
+
+        // Если нигде не нашли
+        return null;
+    }
+
+
+
+        // 3. (Опционально) Ищем в System.getProperty (-Dkey=value)
     public static boolean getBoolean(String key) {
         return Boolean.parseBoolean(get(key));
     }
