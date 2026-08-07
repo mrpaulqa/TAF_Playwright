@@ -1,4 +1,6 @@
 image: mcr.microsoft.com/playwright/java:v1.40.0-jammy
+workflow:
+  name: "Regression Test Suite Run - $CI_COMMIT_REF_NAME"
 
 stages:
   - test
@@ -7,7 +9,7 @@ variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
   PLAYWRIGHT_HEADLESS: "true" # Гарантируем headless-режим
 
-test_job:
+API & UI Automated Tests:
   stage: test
   script:
     - chmod +x ./gradlew
