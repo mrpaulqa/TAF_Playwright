@@ -1,23 +1,24 @@
-image: eclipse-temurin:17-jdk-alpine  # Используем контейнер с Java 17
+image: mcr.microsoft.com/playwright/java:v1.40.0-jammy
 
 stages:
   - test
 
 variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false" # Отключаем Gradle Daemon
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  PLAYWRIGHT_HEADLESS: "true" # Гарантируем headless-режим
 
 test_job:
   stage: test
   script:
-    # Делаем gradlew исполняемым и запускаем тесты с параметрами
     - chmod +x ./gradlew
-    - ./gradlew clean test -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
+    # Включаем headless через системные параметры Java (если передаешь через System.getProperty)
+    - ./gradlew clean test -Dheadless=true -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
 
-  # Сохраняем отчеты о тестах (HTML и JUnit XML)
   artifacts:
     when: always
     paths:
       - build/reports/tests/test/
+      - target/playwright/ # Если сохраняешь скриншоты/трассировки
     reports:
       junit: build/test-results/test/TEST-*.xml
     expire_in: 1 week
