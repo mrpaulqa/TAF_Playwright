@@ -52,7 +52,7 @@ pipeline {
                     }
 
                     // Единая точка запуска тестов с правильным тегом
-                  bat 'gradlew.bat clean test -Dtag=%testTag% --no-daemon -Dapi.thinkingTester="%THINKING_TOKEN%"'
+                  bat 'gradlew.bat clean test -Dtag=%testTag% --no-daemon -Dapi.thinkingToken="%THINKING_TOKEN%"'
                 }
             }
         }
