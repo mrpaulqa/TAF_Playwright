@@ -1,0 +1,204 @@
+{
+  "info": {
+    "_postman_id": "c459d516-209c-4cde-90a4-077d5dff4dc7",
+    "name": "jsonplaceholder collection(TAF)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41825649"
+  },
+  "item": [
+    {
+      "name": "Basic end point tests",
+      "item": [
+        {
+          "name": "Thinkingtester",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has required fields\", function () {",
+                  "    pm.expect(response).to.have.property(\"_id\");",
+                  "    pm.expect(response).to.have.property(\"firstName\");",
+                  "    pm.expect(response).to.have.property(\"lastName\");",
+                  "    pm.expect(response).to.have.property(\"email\");",
+                  "    pm.expect(response).to.have.property(\"phone\");",
+                  "    pm.expect(response).to.have.property(\"owner\");",
+                  "});",
+                  "",
+                  "pm.test(\"Field types are correct\", function () {",
+                  "    pm.expect(response._id).to.be.a(\"string\");",
+                  "    pm.expect(response.firstName).to.be.a(\"string\");",
+                  "    pm.expect(response.lastName).to.be.a(\"string\");",
+                  "    pm.expect(response.email).to.be.a(\"string\");",
+                  "    pm.expect(response.phone).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "pm.test(\"Email format is valid\", function () {",
+                  "    pm.expect(response.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);",
+                  "});",
+                  "",
+                  "pm.test(\"_id is a non-empty string\", function () {",
+                  "    pm.expect(response._id).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"firstName and lastName are non-empty strings\", function () {",
+                  "    pm.expect(response.firstName).to.be.a(\"string\").and.not.empty;",
+                  "    pm.expect(response.lastName).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type header is application/json\", function () {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ThinkingTesterToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vault:ThinkiingTesterToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/6a74926a0cf3330015396ae3",
+              "protocol": "https",
+              "host": [
+                "thinking-tester-contact-list",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "contacts",
+                "6a74926a0cf3330015396ae3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Negative tests",
+      "item": [
+        {
+          "name": "Thinkingtester Contact not exist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "",
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is less than 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has required fields\", function () {",
+                  "    pm.expect(response).to.have.property(\"_id\");",
+                  "    pm.expect(response).to.have.property(\"firstName\");",
+                  "    pm.expect(response).to.have.property(\"lastName\");",
+                  "    pm.expect(response).to.have.property(\"email\");",
+                  "    pm.expect(response).to.have.property(\"phone\");",
+                  "    pm.expect(response).to.have.property(\"owner\");",
+                  "});",
+                  "",
+                  "pm.test(\"Field types are correct\", function () {",
+                  "    pm.expect(response._id).to.be.a(\"string\");",
+                  "    pm.expect(response.firstName).to.be.a(\"string\");",
+                  "    pm.expect(response.lastName).to.be.a(\"string\");",
+                  "    pm.expect(response.email).to.be.a(\"string\");",
+                  "    pm.expect(response.phone).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "pm.test(\"Email format is valid\", function () {",
+                  "    pm.expect(response.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);",
+                  "});",
+                  "",
+                  "pm.test(\"_id is a non-empty string\", function () {",
+                  "    pm.expect(response._id).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"firstName and lastName are non-empty strings\", function () {",
+                  "    pm.expect(response.firstName).to.be.a(\"string\").and.not.empty;",
+                  "    pm.expect(response.lastName).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type header is application/json\", function () {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ThinkingTesterToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vault:ThinkiingTesterToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "https://thinking-tester-contact-list.herokuapp.com/contacts/6a74926a0cf3330015396ae3",
+              "protocol": "https",
+              "host": [
+                "thinking-tester-contact-list",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "contacts",
+                "6a74926a0cf3330015396ae3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

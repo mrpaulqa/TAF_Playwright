@@ -1,0 +1,43 @@
+info:
+  name: Shema validation
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: https://thinking-tester-contact-list.herokuapp.com/users/me
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const response = res.getBody();
+
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+
+        test("Response time is less than 2000ms", function () {
+            expect(res.getResponseTime()).to.be.below(2000);
+        });
+
+        test("Response has required fields", function () {
+          const userSchema = {
+            type: "object",
+            properties: {
+              _id: { type: "string" },
+              firstName: { type: "string"},
+              lastName: { type: "string"},
+              email: { type: "string"}
+            }
+          };
+
+          expect(res.getBody()).to.have.jsonSchema(userSchema);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

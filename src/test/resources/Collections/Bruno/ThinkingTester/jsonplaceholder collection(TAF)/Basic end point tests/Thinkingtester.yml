@@ -1,0 +1,81 @@
+info:
+  name: Thinkingtester
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: https://thinking-tester-contact-list.herokuapp.com/contacts/
+  headers:
+    - name: Authorization
+      value: "{{ThinkiingTesterToken}}"
+      disabled: true
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "firstName": "Alex1",
+        "lastName": "Petrov",
+        "birthdate": "1999-03-03",
+        "email": "alex_petrov@gmail.com",
+        "phone": "1111111111",
+        "street1": "Dluga 10",
+        "city": "Krakow",
+        "owner": "6a748e8edc7228001513f06e",
+        "__v": 0
+      }
+  auth:
+    type: bearer
+    token: "{{ThinkiingTesterToken}}"
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const response = res.getBody();
+
+        test("Status code is 201", function () {
+            expect(res.getStatus()).to.equal(201);
+        });
+
+        test("Response time is less than 2000ms", function () {
+            expect(res.getResponseTime()).to.be.below(2000);
+        });
+
+        test("Response has required fields", function () {
+            expect(response).to.have.property("_id");
+            expect(response).to.have.property("firstName");
+            expect(response).to.have.property("lastName");
+            expect(response).to.have.property("email");
+            expect(response).to.have.property("phone");
+            expect(response).to.have.property("owner");
+        });
+
+        test("Field types are correct", function () {
+            expect(response._id).to.be.a("string");
+            expect(response.firstName).to.be.a("string");
+            expect(response.lastName).to.be.a("string");
+            expect(response.email).to.be.a("string");
+            expect(response.phone).to.be.a("string");
+        });
+
+        test("Email format is valid", function () {
+            expect(response.email).to.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+        });
+
+        test("_id is a non-empty string", function () {
+            expect(response._id).to.be.a("string").and.not.empty;
+        });
+
+        test("firstName and lastName are non-empty strings", function () {
+            expect(response.firstName).to.be.a("string").and.not.empty;
+            expect(response.lastName).to.be.a("string").and.not.empty;
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
