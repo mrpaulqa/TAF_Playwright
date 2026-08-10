@@ -1,24 +1,36 @@
-image: eclipse-temurin:17-jdk-alpine  # Используем контейнер с Java 17
+image: mcr.microsoft.com/playwright/java:v1.40.0-jammy
 
 stages:
   - test
+  - deploy
 
 variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false" # Отключаем Gradle Daemon
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
-test_job:
+# 1. Запуск тестов и сбор allure-results
+run_tests:
   stage: test
   script:
-    # Делаем gradlew исполняемым и запускаем тесты
     - chmod +x ./gradlew
     - ./gradlew clean test -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
-  git remote set-url --delete --push origin https://gitlab.com/pavlo_hurskyi/TAF_Playwright.git
-  git remote set-url --add --push origin https://github.com/mrpaulqa/TAF_Playwright.git
-  # Сохраняем отчеты о тестах (HTML и JUnit XML or other)
   artifacts:
     when: always
     paths:
-      - build/reports/tests/test/
-    reports:
-      junit: build/test-results/test/TEST-*.xml
-    expire_in: 1 week
+      - build/allure-results/
+    expire_in: 1 day
+
+# 2. Генерация и публикация отчета Allure
+pages:
+  stage: deploy
+  dependencies:
+    - run_tests
+  script:
+    - apt-get update && apt-get install -y wget  # Для Ubuntu/Debian/Playwright образов
+    - wget https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.tgz
+    # Скачиваем CLI Allure и генерируем отчет в папку public
+    - wget https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.tgz
+    - tar -zxvf allure-2.25.0.tgz
+    - ./allure-2.25.0/bin/allure generate build/allure-results -o public --clean
+  artifacts:
+    paths:
+      - public # Папка public обязательна для GitLab Pages

@@ -12,6 +12,8 @@ git remote set-url --add --push origin https://git.epam.com//pavlo_hurskyi/TAF_P
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/gradle.xml
+.idea/misc.xml
 *.iws
 *.iml
 *.ipr
