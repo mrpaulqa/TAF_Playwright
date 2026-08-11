@@ -20,7 +20,7 @@ public abstract class BaseApi {
     }
 
 
-    // Авторизованный спецификатор (если нужен Bearer Token)
+    // Authorization specifier (if a Bearer Token is required)
     protected RequestSpecification getAuthRequestSpec(String baseUrl,String token) {
         return request(baseUrl)
                 .header("Authorization", "Bearer " + token);

@@ -12,7 +12,7 @@ import static io.restassured.RestAssured.given;
 public class PostsApiClient extends BaseApi {
     private static final String POSTS_ENDPOINT = "/posts";
     private final RequestSpecification requestSpecification =getRequestSpecification(SpectType.UNAUTH);
-    // 1. Метод, возвращающий сырой Response (для проверок статус-кодов, заголовков)
+    // 1. A method that returns the raw Response (for checking status codes and headers)
     public Response createPost(Post postBody) {
         return given()
                 .spec(requestSpecification)
@@ -20,7 +20,7 @@ public class PostsApiClient extends BaseApi {
                 .post(POSTS_ENDPOINT);
     }
 
-    // 2. Метод с автоматической десериализацией в DTO
+    // 2. Method with automatic deserialization into a DTO
     public Post getPostResponse(Response  response) {
         return response
                 .then()

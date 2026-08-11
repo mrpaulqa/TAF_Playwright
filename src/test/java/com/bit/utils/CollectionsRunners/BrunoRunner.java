@@ -43,7 +43,7 @@ public class BrunoRunner implements CollectionRunner{
         processBuilder.inheritIO();
 
         try {
-            System.out.println("🚀 Запуск Bruno коллекции в папке: " + collectionDir.getAbsolutePath());
+            System.out.println("🚀 Run the Bruno collection in the folder: " + collectionDir.getAbsolutePath());
             Process process = processBuilder.start();
             int exitCode = process.waitFor();
 
@@ -55,13 +55,13 @@ public class BrunoRunner implements CollectionRunner{
             }
 
             if (exitCode != 0) {
-                throw new RuntimeException("❌ Ошибка при выполнении Bruno коллекции! Exit code: " + exitCode);
+                throw new RuntimeException("❌ Error executing Bruno collection! Exit code: " + exitCode);
             } else {
-                System.out.println("✅ Коллекция Bruno " + collectionName + " успешно выполнена!");
+                System.out.println("✅ Bruno Collection " + collectionName + "successfully completed!");
             }
 
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Ошибка запуска Bruno CLI: " + e.getMessage(), e);
+            throw new RuntimeException("Error launching Bruno CLI: " + e.getMessage(), e);
         }
     }
 }

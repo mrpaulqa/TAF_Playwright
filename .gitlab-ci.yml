@@ -7,7 +7,9 @@ stages:
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 before_script:
-  - apt-get update && apt-get install -y nodejs npm
+  - apt-get update && apt-get install -y curl
+  - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+  - apt-get install -y nodejs
   - npm install -g newman @usebruno/cli
 # 1. Запуск тестов и сбор allure-results
 run_tests:

@@ -59,7 +59,7 @@ public class PostSteps {
         testContext.setResponse(response);
 
     }
-    //NEW
+
     @When("I create post with title {string}, body {string} and userId {int}")
     public void iCreatePostWithBody(String title, String body, int userId) {
         expectedPost = Post.builder()
@@ -89,7 +89,7 @@ public class PostSteps {
         expectedPostWithParameters.setId(actualPost.getId());
         assertEquals(actualPost, expectedPostWithParameters);
     }
-    //NEW
+
     @Then("the posts response body should match the title {string}, body {string} and userId {int}")
     public void thePostResponseBodyShouldMatchTheSentPostListOfParameters(String title, String body, int userId){
         Post actualPost = postsApiClient.getPostResponse(response);

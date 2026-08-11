@@ -1,9 +1,7 @@
 package com.bit.ui.Components;
 
-import com.bit.ui.BasePage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.WaitForSelectorState;
 
 public class HeaderComponent {
     private Page page;
