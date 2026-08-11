@@ -6,7 +6,9 @@ stages:
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-
+before_script:
+  - apt-get update && apt-get install -y nodejs npm
+  - npm install -g newman @usebruno/cli
 # 1. Запуск тестов и сбор allure-results
 run_tests:
   stage: test

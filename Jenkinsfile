@@ -66,3 +66,4 @@ pipeline {
         }
     }
 }
+// add nodejs 'NodeJS-18'

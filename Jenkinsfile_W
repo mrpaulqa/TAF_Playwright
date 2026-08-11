@@ -3,6 +3,7 @@ pipeline {
 
     tools {
         jdk 'JDK_17'
+        nodejs 'NodeJS-26'
     }
     environment {
         TEST_REPORT_EMAIL = credentials('TEST_REPORT_EMAIL')
