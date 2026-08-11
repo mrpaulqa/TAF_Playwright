@@ -17,7 +17,7 @@ public class BrunoRunner implements CollectionRunner{
 
         File collectionDir = new File(collectionFolderPath);
         String collectionName = collectionDir.getName();
-        String junitReportPath = new File("build/allure-results/TEST-bruno-" + collectionName + ".xml").getAbsolutePath();
+        String junitReportPath = new File(allureDir, "TEST-bruno-" + collectionName + ".xml").getAbsolutePath();
         StringBuilder command = new StringBuilder();
         command.append("npx @usebruno/cli run .")
                 .append(" -r")
@@ -30,6 +30,8 @@ public class BrunoRunner implements CollectionRunner{
         }
 
         ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.environment().put("LC_ALL", "C.UTF-8");
+        processBuilder.environment().put("LANG", "C.UTF-8");
         processBuilder.directory(collectionDir);
 
         if (isWindows) {
