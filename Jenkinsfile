@@ -55,10 +55,16 @@ pipeline {
                         testTag = params.TEST_SUITE
                     }
 
+                    // Установка Node.js, npm и Bruno CLI в Docker-контейнер
+                    sh '''
+                    apt-get update && apt-get install -y nodejs npm
+                    npm install -g @usebruno/cli
+                '''
+
                     // Права на исполнение gradlew внутри Linux Docker-контейнера
                     sh 'chmod +x ./gradlew'
 
-                    // Запуск тестов на macOS/Linux через sh вместо bat
+                    // Запуск тестов
                     sh "./gradlew clean test -Dtag=${testTag} --no-daemon -Dapi.thinkingEmail='${THINKING_EMAIL}' -Dapi.thinkingPassword='${THINKING_PASSWORD}'"
                 }
             }
