@@ -57,8 +57,13 @@ pipeline {
 
                     // Установка Node.js, npm и Bruno CLI в Docker-контейнер
                     sh '''
-                    apt-get update && apt-get install -y nodejs npm
-                    npm install -g @usebruno/cli
+                   # 1. Подключаем репозиторий Node.js 20.x
+                   apt-get update && apt-get install -y curl
+                   curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+
+                    # 2. Устанавливаем свежую Node.js (вместе с npx/npm) и Bruno CLI
+                   apt-get install -y nodejs
+                   npm install -g @usebruno/cli
                 '''
 
                     // Права на исполнение gradlew внутри Linux Docker-контейнера
