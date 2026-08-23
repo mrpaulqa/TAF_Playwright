@@ -8,7 +8,7 @@ http:
   url: https://thinking-tester-contact-list.herokuapp.com/contacts/1
   headers:
     - name: Authorization
-      value: "{{ThinkiingTesterToken}}"
+      value: "{{Token}}"
       disabled: true
     - name: Content-Type
       value: application/json
@@ -28,9 +28,12 @@ http:
       }
   auth:
     type: bearer
-    token: "{{ThinkiingTesterToken}}"
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
 
 runtime:
+  variables:
+    - name: Token
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
   scripts:
     - type: tests
       code: |-
@@ -49,3 +52,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true

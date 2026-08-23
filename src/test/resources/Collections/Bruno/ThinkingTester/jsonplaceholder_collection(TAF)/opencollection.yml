@@ -15,9 +15,18 @@ config:
       bypassProxy: ""
 
 request:
+  headers:
+    - name: Authorization
+      value: "{{Token}}"
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODYwMjM2Nzh9._D-P0idnBQfJa-FIe1HV4s9qC1X4hQxEkE7thJMpNRU
+    token: |-
+      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
+      Starting Gradle Daemon...
+      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
+  variables:
+    - name: Token
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
 bundled: false
 extensions:
   bruno:

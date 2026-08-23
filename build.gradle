@@ -39,7 +39,7 @@ dependencies {
     testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-picocontainer:${cucumberVersion}"
-
+    testImplementation("com.github.tomakehurst:wiremock-standalone:2.7.1")
     // --- UI testing: Playwright (Chromium) ---
     testImplementation 'com.microsoft.playwright:playwright:1.49.0'
 

@@ -13,7 +13,9 @@ public class ContactApiClient extends BaseApi {
     private final RequestSpecification  requestSpecification =getRequestSpecification(SpectType.AUTH);
 
     public Response createContact(Contact contact) {
+        System.out.println("Creating contact: " + contact);
         return given()
+                .log().all()
                 .spec(requestSpecification)
                 .body(contact)
                 .post(CONTACTS_ENDPOINT);

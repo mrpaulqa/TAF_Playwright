@@ -19,6 +19,7 @@ public class CommonApiSteps {
     @Then("the response status code should be {int}")
     public void theResponseStatusCodeShouldBe(int expected) {
         response = testContext.getResponse();
+        System.out.println("Response body: " + response.getBody().asString());
         assertEquals(expected,response.getStatusCode());
     }
 

@@ -23,10 +23,11 @@ public class PlaywrightHooks {
     public void closeBrowser(Scenario scenario) {
         if (scenario.isFailed() && PlaywrightFactory.getPage() != null) {
             byte[] screenshot = PlaywrightFactory.getPage().screenshot(
-                    new Page.ScreenshotOptions().setFullPage(true) // FullPage скриншот дает больше контекста при баге!
-            );
+                    new Page.ScreenshotOptions().setFullPage(true));
             scenario.attach(screenshot, "image/png", "Failed Step: " + scenario.getName());
         }
         PlaywrightFactory.closeBrowser();
     }
+
+
 }

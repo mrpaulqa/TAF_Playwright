@@ -9,11 +9,9 @@ public class AuthManager {
 
     public static synchronized String getToken() {
         if (token == null) {
-            // Читаем логин/пароль из ConfigReader (который берет их из CI/Jenkins или .env)
             String email = ConfigReader.get("api.thinkingEmail");
             String password = ConfigReader.get("api.thinkingPassword");
 
-            // Выполняем POST-запрос на логин
             token = given()
                     .contentType(ContentType.JSON)
                     .body(String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password))
