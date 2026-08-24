@@ -8,8 +8,7 @@ http:
   url: https://thinking-tester-contact-list.herokuapp.com/contacts/
   headers:
     - name: Authorization
-      value: "{{ThinkiingTesterToken}}"
-      disabled: true
+      value: "{{Token}}"
     - name: Content-Type
       value: application/json
   body:
@@ -28,9 +27,12 @@ http:
       }
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc1NTg4MjZ9.muwGEMrhlqK5vB6_cZz9-KLTHUbctCefF3LdEsN01Lk
 
 runtime:
+  variables:
+    - name: Token
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc1NTg4MjZ9.muwGEMrhlqK5vB6_cZz9-KLTHUbctCefF3LdEsN01Lk
   scripts:
     - type: tests
       code: |-

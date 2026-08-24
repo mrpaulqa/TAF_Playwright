@@ -11,8 +11,8 @@ public class ApiHooks {
 
 
     private WireMockServer wireMockServer;
-
-    @Before(value="@apiThinkingTesterCC", order=20)
+    private final String tagValue="@NonExistTag";
+    @Before(value=tagValue, order=20)
     public void beforeApiThinkingTesterCC() {
         wireMockServer = new WireMockServer(8080);
         wireMockServer.start();
@@ -29,7 +29,7 @@ public class ApiHooks {
                         .withBody("{\"_id\": \"12345\", \"firstName\": \"John\"}")));
     }
 
-    @After(value="@apiThinkingTesterCC")
+    @After(value=tagValue)
     public void afterApiThinkingTesterCC() {
         if (wireMockServer != null && wireMockServer.isRunning()) {
             wireMockServer.stop();

@@ -26,9 +26,9 @@ public class BrunoRunner implements CollectionRunner{
             command.append(" --env ").append(envName);
         }
         if (token != null && !token.isEmpty()) {
-            command.append(" --env-var ThinkiingTesterToken=").append(token);
+            command.append(" --env-var Token=").append(token);
         }
-
+        System.out.println("Running Bruno: " + command);
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.environment().put("LC_ALL", "C.UTF-8");
         processBuilder.environment().put("LANG", "C.UTF-8");

@@ -20,13 +20,10 @@ request:
       value: "{{Token}}"
   auth:
     type: bearer
-    token: |-
-      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
-      Starting Gradle Daemon...
-      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc1NTg1MTF9.sUij9WerOj2GUmz7jifxAP4Nle37GnQ2BUlgnGZGkz8
   variables:
     - name: Token
-      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc1NTg1MTF9.sUij9WerOj2GUmz7jifxAP4Nle37GnQ2BUlgnGZGkz8
 bundled: false
 extensions:
   bruno:
