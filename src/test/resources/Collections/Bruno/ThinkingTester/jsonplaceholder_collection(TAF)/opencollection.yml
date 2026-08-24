@@ -1,0 +1,32 @@
+opencollection: 1.0.0
+
+info:
+  name: jsonplaceholder collection(TAF)
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  headers:
+    - name: Authorization
+      value: "{{Token}}"
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc1NTg1MTF9.sUij9WerOj2GUmz7jifxAP4Nle37GnQ2BUlgnGZGkz8
+  variables:
+    - name: Token
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc1NTg1MTF9.sUij9WerOj2GUmz7jifxAP4Nle37GnQ2BUlgnGZGkz8
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

@@ -1,0 +1,5 @@
+name: Thinkingtester
+variables:
+  - secret: true
+    name: ThinkiingTesterToken
+    description: ""

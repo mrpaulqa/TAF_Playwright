@@ -1,0 +1,46 @@
+info:
+  name: Shema validation
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: https://thinking-tester-contact-list.herokuapp.com/users/me
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc1NTg4MjZ9.muwGEMrhlqK5vB6_cZz9-KLTHUbctCefF3LdEsN01Lk
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const response = res.getBody();
+
+        test("Status code is 200", function () {
+            expect(res.getStatus()).to.equal(200);
+        });
+
+        test("Response time is less than 5000ms", function () {
+            expect(res.getResponseTime()).to.be.below(5000);
+        });
+
+        test("Response has required fields", function () {
+          const userSchema = {
+            type: "object",
+            properties: {
+              _id: { type: "string" },
+              firstName: { type: "string"},
+              lastName: { type: "string"},
+              email: { type: "string"}
+            }
+          };
+
+          expect(res.getBody()).to.have.jsonSchema(userSchema);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -9,12 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Base class for JDBC database tests. Lazily opens a single connection using
- * the {@code db.*} configuration (MySQL via Docker, or embedded H2 by default)
- * and exposes small query helpers. The connection is shared across step and
- * hook classes within a scenario via PicoContainer dependency injection.
- */
 public class BaseDB {
 
     private Connection connection;
@@ -73,7 +67,6 @@ public class BaseDB {
             try {
                 connection.close();
             } catch (SQLException ignored) {
-                // best-effort close
             } finally {
                 connection = null;
             }

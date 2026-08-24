@@ -3,63 +3,75 @@ pipeline {
 
     tools {
         jdk 'JDK_17'
+        nodejs 'NodeJS-26'
+    }
+    environment {
+        TEST_REPORT_EMAIL = credentials('TEST_REPORT_EMAIL')
+        THINKING_EMAIL = credentials('THINKING_EMAIL')
+        THINKING_PASSWORD = credentials('THINKING_PASSWORD')
     }
     triggers {
-            cron('H 2 * * 1-5')
-        }
+        cron('H 2 * * 1-5')
+    }
 
-    // Храним настройки времени и параметров в одном месте
+    // Store time settings and parameters in one place
     options {
-        timeout(time: 1, unit: 'HOURS') // Защита от бесконечного висания тестов
-        timestamps()                     // Добавляет время к каждой строчке лога
-        buildDiscarder(logRotator(numToKeepStr: '10')) // Храним только последние 10 сборок (экономим диск)
+        timeout(time: 1, unit: 'HOURS') // Protection against infinite test hanging
+        timestamps()                     // Adds timestamp to each log line
+        buildDiscarder(logRotator(numToKeepStr: '10')) // Keep only the last 10 builds (save disk space)
     }
 
     parameters {
-            // Позволяет при ручном запуске выбрать, что именно гоним
-            choice(name: 'TEST_SUITE', choices: ['ui', 'api', 'db','all'], description: 'Какой набор тестов запустить')
-        }
+        // Allows choosing exactly what to run on manual trigger
+        choice(name: 'TEST_SUITE', choices: ['ui', 'api', 'db', 'all'], description: 'Which test suite to run')
+    }
 
     stages {
         stage('Run Tests') {
             steps {
                 script {
                     def testTag = ''
-
-                    // 1. Если это запуск из Pull Request -> СТРОГО smoke
                     if (env.CHANGE_ID) {
-                        echo "Авто-запуск для PR #${env.CHANGE_ID}: прогоняем только Smoke-тесты"
+                        echo "Auto-run for PR #${env.CHANGE_ID}: running Smoke tests only"
                         testTag = 'api'
                     }
                     else if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'main') {
-                            echo "Изменения влиты в ${env.BRANCH_NAME}: запускаем полный регресс!"
-                            bat "gradlew.bat clean test"
-                        }
-                    // 2. Если запуск по расписанию (Cron / Nightly) -> полный регресс
+                        echo "Changes merged into ${env.BRANCH_NAME}: preparing to run full regression!"
+                        testTag = 'all'
+                    }
                     else if (BUILD_CAUSE == 'TIMERTRIGGER') {
-                        echo "Ночной авто-запуск: прогоняем полный Regression"
+                        echo "Nightly auto-run: running full Regression"
                         testTag = 'ui'
                     }
-                    // 3. Если запустили руками из UI -> берем выбор из параметров
                     else {
-                        echo "Ручной запуск: выбран сьют ${params.TEST_SUITE}"
+                        echo "Manual run: selected suite ${params.TEST_SUITE}"
                         testTag = params.TEST_SUITE
                     }
-
-                    // Передаем тег в Gradle
-                    bat "gradlew.bat clean test -Dtag=${testTag} --no-daemon"
+                  bat 'gradlew.bat clean test -Dtag=%testTag% --no-daemon -Dapi.thinkingEmail="%THINKING_EMAIL%" -Dapi.thinkingPassword="%THINKING_PASSWORD%"'
                 }
             }
         }
     }
 
-    // Секция post выполняется ВСЕГДА после прогона (даже если тесты упали)
     post {
-      always {
-          allure commandline: 'allure_cli',
-                 includeProperties: false,
-                 jdk: '',
-                 results: [[path: '**/allure-results']]
-      }
-  }
+        always {
+            allure commandline: 'allure_cli',
+                   includeProperties: false,
+                   jdk: '',
+                   results: [[path: '**/allure-results']]
+            mail(
+                to: env.TEST_REPORT_EMAIL,
+                subject: "Test results: Job '${env.JOB_NAME}' [Build #${env.BUILD_NUMBER}]",
+                body: """
+                     <html>
+                     <body>
+                          <h2> Build status: ${currentBuild.currentResult}</h2>
+                          <p>Automated tests completed. View Allure: <a href="${env.BUILD_URL}allure/">Allure Report</a></p>
+                     </body>
+                     </html>
+                    """,
+                mimeType: 'text/html'
+            )
+        }
+    }
 }

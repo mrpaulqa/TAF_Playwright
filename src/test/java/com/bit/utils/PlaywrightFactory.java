@@ -6,11 +6,9 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 
-/**
- * Owns the Playwright lifecycle for a scenario. The instances are kept in
- * {@link ThreadLocal}s so scenarios stay isolated if executed in parallel.
- * Created/destroyed from the Cucumber {@code @Before}/{@code @After} hooks.
- */
+import static com.bit.utils.BrowserFactory.getBrowser;
+
+
 public final class PlaywrightFactory {
 
     private static final ThreadLocal<Playwright> PLAYWRIGHT = new ThreadLocal<>();
@@ -24,9 +22,9 @@ public final class PlaywrightFactory {
     public static Page initBrowser() {
         Playwright playwright = Playwright.create();
         PLAYWRIGHT.set(playwright);
-
-        Browser browser = playwright.chromium().launch(
-                new BrowserType.LaunchOptions().setHeadless(ConfigReader.getBoolean("ui.headless")));
+        String browserType = ConfigReader.get("browser");
+        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(ConfigReader.getBoolean("ui.headless"));
+        Browser browser =getBrowser(browserType).launch(playwright,launchOptions);
         BROWSER.set(browser);
 
         BrowserContext context = browser.newContext();
@@ -50,7 +48,7 @@ public final class PlaywrightFactory {
         }
         if (PLAYWRIGHT.get() != null) {
             PLAYWRIGHT.get().close();
-        }
+                }
         PAGE.remove();
         CONTEXT.remove();
         BROWSER.remove();

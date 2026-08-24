@@ -1,0 +1,54 @@
+info:
+  name: Wrong user ID TC
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: https://thinking-tester-contact-list.herokuapp.com/contacts/1
+  headers:
+    - name: Authorization
+      value: "{{Token}}"
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "firstName": "Alex1",
+        "lastName": "Petrov",
+        "birthdate": "1999-03-03",
+        "email": "alex_petrov@gmail.com",
+        "phone": "1111111111",
+        "street1": "Dluga 10",
+        "city": "Krakow",
+        "owner": "6a748e8edc7228001513f06e",
+        "__v": 0
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc1NTg4MjZ9.muwGEMrhlqK5vB6_cZz9-KLTHUbctCefF3LdEsN01Lk
+
+runtime:
+  variables:
+    - name: Token
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTc0OGU4ZWRjNzIyODAwMTUxM2YwNmUiLCJpYXQiOjE3ODc0OTc5NTV9.XRKT96-UqrL79oDPMD1kuU_0H6cHo20Pdk8NPfLAjjA
+  scripts:
+    - type: tests
+      code: |-
+        const response = res.getBody();
+
+        test("Status code is 201", function () {
+            expect(res.getStatus()).to.equal(400);
+        });
+
+        test("Response time is less than 5000ms", function () {
+            expect(res.getResponseTime()).to.be.below(5000);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

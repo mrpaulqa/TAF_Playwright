@@ -30,7 +30,8 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     compileOnly 'org.projectlombok:lombok:1.18.38'
     annotationProcessor 'org.projectlombok:lombok:1.18.38'
-
+    implementation("io.github.cdimascio:java-dotenv:5.2.2")
+    testImplementation("ch.qos.logback:logback-classic:1.5.12")
     testCompileOnly 'org.projectlombok:lombok:1.18.38'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
 
@@ -38,7 +39,7 @@ dependencies {
     testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-picocontainer:${cucumberVersion}"
-
+    testImplementation("com.github.tomakehurst:wiremock-standalone:2.7.1")
     // --- UI testing: Playwright (Chromium) ---
     testImplementation 'com.microsoft.playwright:playwright:1.49.0'
 
@@ -53,7 +54,9 @@ dependencies {
     testImplementation platform("io.qameta.allure:allure-bom:${allureVersion}")
     testImplementation 'io.qameta.allure:allure-cucumber7-jvm'
     testImplementation 'io.qameta.allure:allure-rest-assured'
+    testImplementation 'io.qameta.allure:allure-junit5:2.25.0'
 }
+
 
 // Standard `gradle test` runs the Cucumber suite through the JUnit Platform.
 tasks.named('test') {
@@ -68,7 +71,7 @@ tasks.named('test') {
 }
 
 // Convenience task: run Cucumber directly via its CLI (same glue + Allure plugin).
-tasks.register('cucumber', JavaExec) {
+tasks.register('cucumber', JavaExec.class) {
     group = 'verification'
     description = 'Runs Cucumber feature files via the Cucumber CLI with the Allure plugin.'
     dependsOn 'testClasses'
@@ -91,3 +94,14 @@ tasks.register('installPlaywright', JavaExec) {
     mainClass = 'com.microsoft.playwright.CLI'
     args = ['install', 'chromium']
 }
+tasks.register('smokeTest', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    useJUnitPlatform {
+        includeTags 'SmokeTests'
+    }
+}
+
+
+

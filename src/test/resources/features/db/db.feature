@@ -1,6 +1,7 @@
 @db
 Feature: DB smoke test (JDBC / MySQL)
 
+  @SmokeTests
   Scenario: Insert a user and read it back
     Given a clean "users" table exists
     When I insert a user named "Alice"

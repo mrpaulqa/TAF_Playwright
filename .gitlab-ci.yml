@@ -1,0 +1,40 @@
+image: mcr.microsoft.com/playwright/java:v1.40.0-jammy
+
+stages:
+  - test
+  - deploy
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+before_script:
+  - apt-get update && apt-get install -y curl
+  - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+  - apt-get install -y nodejs
+  - npm install -g newman @usebruno/cli
+# 1. Запуск тестов и сбор allure-results
+run_tests:
+  stage: test
+  script:
+    - chmod +x ./gradlew
+    - ./gradlew clean test -Dapi.thinkingEmail="$THINKING_EMAIL" -Dapi.thinkingPassword="$THINKING_PASSWORD"
+  artifacts:
+    when: always
+    paths:
+      - build/allure-results/
+    expire_in: 1 day
+
+# 2. Генерация и публикация отчета Allure
+pages:
+  stage: deploy
+  dependencies:
+    - run_tests
+  script:
+    - apt-get update && apt-get install -y wget  # Для Ubuntu/Debian/Playwright образов
+    - wget https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.tgz
+    # Скачиваем CLI Allure и генерируем отчет в папку public
+    - wget https://github.com/allure-framework/allure2/releases/download/2.25.0/allure-2.25.0.tgz
+    - tar -zxvf allure-2.25.0.tgz
+    - ./allure-2.25.0/bin/allure generate build/allure-results -o public --clean
+  artifacts:
+    paths:
+      - public # Папка public обязательна для GitLab Pages

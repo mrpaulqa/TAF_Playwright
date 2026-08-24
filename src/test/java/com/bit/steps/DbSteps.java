@@ -11,8 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DbSteps {
 
     private final BaseDB db;
-
-    // Injected by PicoContainer; shared with DatabaseHooks for cleanup.
     public DbSteps(BaseDB db) {
         this.db = db;
     }

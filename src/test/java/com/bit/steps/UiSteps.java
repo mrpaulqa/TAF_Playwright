@@ -1,5 +1,6 @@
 package com.bit.steps;
 
+import com.bit.ui.CLIPage;
 import com.bit.ui.DocsPage;
 import com.bit.ui.HomePage;
 import com.bit.context.TestContext;
@@ -7,6 +8,7 @@ import com.bit.ui.MCPPage;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UiSteps {
@@ -43,4 +45,18 @@ public class UiSteps {
         mcpPage.openMCPPage();
         context.setCurrentPage(mcpPage);
     }
+    @Given("I open CLI page")
+    public void openCLIPage(){
+        CLIPage cliPage = new CLIPage();
+        cliPage.openCLIPage();
+        context.setCurrentPage(cliPage);
+    }
+
+    @Then("I check that page header is {string}")
+    public void verifyPageHeader(String headerExpected){
+            String header =context.getCurrentPage().pageHeader();
+            assertEquals(header, headerExpected, "Expected header to contain '"
+                    + headerExpected + "' but was '" + header + "'");
+        }
+
 }
