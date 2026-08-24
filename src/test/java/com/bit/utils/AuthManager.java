@@ -20,7 +20,7 @@ public class AuthManager {
                     .then()
                     .statusCode(200)
                     .extract()
-                    .path("token"); // Извлекаем токен из JSON ответа {"token": "eyJhbG..."}
+                    .path("token");
         }
         return token;
     }

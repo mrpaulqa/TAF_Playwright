@@ -5,10 +5,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 
-/**
- * Base class for REST Assured API tests. Builds a request specification
- * pre-configured with the API base URI and the Allure reporting filter.
- */
+
 public abstract class BaseApi {
 
     protected RequestSpecification request(String baseUrl) {
@@ -19,8 +16,6 @@ public abstract class BaseApi {
                 .filter(new AllureRestAssured());
     }
 
-
-    // Authorization specifier (if a Bearer Token is required)
     protected RequestSpecification getAuthRequestSpec(String baseUrl,String token) {
         return request(baseUrl)
                 .header("Authorization", "Bearer " + token);

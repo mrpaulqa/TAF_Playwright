@@ -6,10 +6,6 @@ import com.microsoft.playwright.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Base class for all Playwright page objects. Exposes the active {@link Page}
- * (managed by the Cucumber hooks) plus a few common helpers.
- */
 public abstract class BasePage {
     private static final Logger logger = LoggerFactory.getLogger(BasePage.class);
 

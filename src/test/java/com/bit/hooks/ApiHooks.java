@@ -3,7 +3,6 @@ package com.bit.hooks;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.BeforeAll;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 

@@ -8,11 +8,7 @@ import com.microsoft.playwright.Playwright;
 
 import static com.bit.utils.BrowserFactory.getBrowser;
 
-/**
- * Owns the Playwright lifecycle for a scenario. The instances are kept in
- * {@link ThreadLocal}s so scenarios stay isolated if executed in parallel.
- * Created/destroyed from the Cucumber {@code @Before}/{@code @After} hooks.
- */
+
 public final class PlaywrightFactory {
 
     private static final ThreadLocal<Playwright> PLAYWRIGHT = new ThreadLocal<>();

@@ -6,11 +6,6 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 
-/**
- * Manages the Playwright lifecycle for UI scenarios only (tagged {@code @ui}),
- * so API/DB scenarios never spin up a browser. On failure a screenshot is
- * attached to the Allure/Cucumber report.
- */
 public class PlaywrightHooks {
 
     @Before(value = "@ui", order = 10)
